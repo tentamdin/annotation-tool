@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BsFillPlayFill } from "react-icons/bs";
+import { AudioPlayer } from "../components/AudioPlayer";
 
 export const AnnotationPage = () => {
   const [index, setIndex] = useState(0);
@@ -56,13 +58,7 @@ export const AnnotationPage = () => {
   return (
     <>
       <div className="mt-5">
-        <p>Audio page {files[index]?.audioname} </p>
-        <audio controls key={state ? files?.id : files[index]?.id}>
-          <source
-            src={state ? files?.audioname : files[index]?.audioname}
-            type="audio/mp3"
-          />
-        </audio>
+        <AudioPlayer state={state} files={files} index={index} />
         <div className="form-floating mt-5">
           <textarea
             value={transcript || ""}
