@@ -11,14 +11,17 @@ export const AnnotationPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
+  // on first load set the transcript and files state
   useEffect(() => {
     let isMounted = true;
+    // check if state object, when redirect from audio segment comp. for single file obj
     if (state) {
       const { file } = state;
       setTranscript(file.transcript);
       setFiles(file);
       console.log("file value", file, file);
     } else {
+      // fetch the data and set files, transcrpipt state
       const fetchData = async () => {
         try {
           const response = await axios.get("http://localhost:3030/unaanotated");
@@ -43,7 +46,7 @@ export const AnnotationPage = () => {
     console.log(response.data);
   };
 
-  // update the current file data and display next file
+  // update the change in current data and display next file
   const updateFileData = (status, id) => {
     axios
       .put("http://localhost:3030/update", { id, status, transcript })
@@ -69,7 +72,7 @@ export const AnnotationPage = () => {
             style={{
               height: 500,
             }}
-          ></textarea>
+          />
           <label htmlFor="transcript">Transcript</label>
         </div>
         <div className="mt-5 d-flex justify-content-evenly mx-auto w-50">

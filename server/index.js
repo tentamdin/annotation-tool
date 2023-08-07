@@ -2,9 +2,30 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
-const fs = require("fs");
+const AWS = require("aws-sdk");
+require("dotenv").config();
+
 app.use(cors());
 app.use(express.json());
+
+AWS.config.update({
+  region: "ap-south-1",
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  },
+});
+
+const s3 = new AWS.S3();
+const bucketName = "pecha-audio";
+const params = {
+  Bucket: bucketName,
+  Key: "idea.mp3",
+};
+
+// const presignedUrl = s3.getSignedUrl("getObject", params);
+
+// console.log("Presigned URL:", presignedUrl);
 
 const db = mysql.createConnection({
   user: "root",
@@ -21,7 +42,18 @@ app.get("/unaanotated", (req, res) => {
     if (err) {
       console.error("Error fetching audio files:", err);
     } else {
-      res.json(result);
+      console.log("response ::", result);
+      const fileArray = result.map((list) => {
+        const key = list.audioname;
+        const params = {
+          Bucket: bucketName,
+          Key: key,
+        };
+        const presignedUrl = s3.getSignedUrl("getObject", params);
+        return { ...list, audioname: presignedUrl };
+      });
+      console.log("update array", fileArray);
+      res.json(fileArray);
     }
   });
 });
@@ -34,7 +66,17 @@ app.get("/aanotated", (req, res) => {
     if (err) {
       console.error("Error fetching audio files:", err);
     } else {
-      res.json(result);
+      const fileArray = result.map((list) => {
+        const key = list.audioname;
+        const params = {
+          Bucket: bucketName,
+          Key: key,
+        };
+        const presignedUrl = s3.getSignedUrl("getObject", params);
+        return { ...list, audioname: presignedUrl };
+      });
+      console.log("update array", fileArray);
+      res.json(fileArray);
     }
   });
 });

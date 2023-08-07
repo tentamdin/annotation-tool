@@ -18,6 +18,8 @@ export const AudioPlayer = ({ state, files, index }) => {
     audioRef.current.playbackRate = speed;
   };
 
+  const speedRate = [0.5, 0.75, 1, 1.25, 1.5, 1.75];
+
   return (
     <div className="text-center">
       <audio
@@ -32,27 +34,15 @@ export const AudioPlayer = ({ state, files, index }) => {
         />
       </audio>
       <div className="d-flex gap-5 justify-content-center">
-        <button className="mt-4" onClick={() => handlePlayPause()}>
+        <button className="mt-4 btn btn-secondary" onClick={() => handlePlayPause()}>
           {isPlaying ? <BsFillPauseFill /> : <BsFillPlayFill />}
         </button>
-        <button className="mt-4" onClick={() => handlePlayRate(0.5)}>
-          0.5 speed
-        </button>
-        <button className="mt-4" onClick={() => handlePlayRate(0.75)}>
-          0.75 speed
-        </button>{" "}
-        <button className="mt-4" onClick={() => handlePlayRate(1)}>
-          Normal
-        </button>{" "}
-        <button className="mt-4" onClick={() => handlePlayRate(1.25)}>
-          1.25 speed
-        </button>
-        <button className="mt-4" onClick={() => handlePlayRate(1.5)}>
-          1.5 speed
-        </button>
-        <button className="mt-4" onClick={() => handlePlayRate(1.75)}>
-          1.75 speed
-        </button>
+        {speedRate.map((speed) => {
+          return (
+          <button key={speed} className="mt-4 btn btn-info" onClick={() => handlePlayRate(speed)}>
+          {speed === 1 ? "Normal" : speed + " speed" } 
+        </button>)
+        })}
       </div>
     </div>
   );
